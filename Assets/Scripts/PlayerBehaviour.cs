@@ -11,7 +11,6 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update() // Call the CheckCollision and the Move Function.
     {
-        CheckCollision();
         Move();
     }
 
@@ -24,7 +23,7 @@ public class PlayerBehaviour : MonoBehaviour
         transform.Translate(Movement);
     }
 
-    void CheckCollision() // Extra thing I did, so the player dosen't go offscreen.
+    void CheckCollision() // This was for lab 1. But I made the Map Bigger for Lab 2.
     {
         if (transform.position.x > 10.8)
             transform.position = new Vector3(10.6f, transform.position.y, 0);
