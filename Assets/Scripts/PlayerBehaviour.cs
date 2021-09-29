@@ -7,11 +7,13 @@ public class PlayerBehaviour : MonoBehaviour
 
     public float speed = 10;
     float MoveX, MoveY;
+    Rigidbody2D rb;
 
     // Update is called once per frame
     void Update() // Call the CheckCollision and the Move Function.
     {
         Move();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Move() // Move the player around the map
@@ -21,6 +23,19 @@ public class PlayerBehaviour : MonoBehaviour
 
         Vector3 Movement = new Vector3(MoveX * speed * Time.deltaTime, MoveY * speed * Time.deltaTime, 0);
         transform.Translate(Movement);
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("HIT Obstacle!");
+        }
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log("HIT Enemy, Ouch!");
+            transform.position = new Vector3(0, 0, 0);
+        }
     }
 
     void CheckCollision() // This was for lab 1. But I made the Map Bigger for Lab 2.
