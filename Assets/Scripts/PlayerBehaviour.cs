@@ -9,6 +9,12 @@ public class PlayerBehaviour : MonoBehaviour
     float MoveX, MoveY;
     Rigidbody2D rb;
 
+    void Start()
+    {
+        GameSaver.OnSaveEvent.AddListener(SavePosition);
+        GameSaver.OnLoadEvent.AddListener(LoadPosition);
+    }
+
     // Update is called once per frame
     void Update() // Call the CheckCollision and the Move Function.
     {
@@ -48,5 +54,18 @@ public class PlayerBehaviour : MonoBehaviour
             transform.position = new Vector3(transform.position.x, 4.1f, 0);
         if (transform.position.y < -4.1)
             transform.position = new Vector3(transform.position.x, -3.9f, 0);
+    }
+    
+
+    void SavePosition()
+    {
+        PlayerPrefs.SetString("Position", "Hello!");
+        Debug.Log("Position Saved");
+    }
+    
+    void LoadPosition()
+    {
+        PlayerPrefs.GetString("Position", "");
+        Debug.Log("Position Loaded");
     }
 }
