@@ -16,6 +16,7 @@ public class GameSaver : MonoBehaviour
         player = FindObjectOfType<PlayerBehaviour>();
     }
 
+    //Saves player position
     public void Save()
     {
         OnSaveEvent.Invoke();
@@ -24,6 +25,7 @@ public class GameSaver : MonoBehaviour
         Debug.Log("Saved");
     }
 
+    //loads player position
     public void Load()
     {
         OnLoadEvent.Invoke();

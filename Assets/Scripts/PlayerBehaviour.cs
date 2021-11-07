@@ -2,12 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Direction
+{
+    FORWARD = 0, 
+    LEFT = 1,
+    BACKWARD = 2,
+    RIGHT = 3
+}
+
 public class PlayerBehaviour : MonoBehaviour
 {
-
     public float speed = 10;
     float MoveX, MoveY;
     Rigidbody2D rb;
+    public Direction p_dir;
+    public Animator anim;
+    public bool isWalking = false;
 
     void Start()
     {
@@ -26,6 +36,42 @@ public class PlayerBehaviour : MonoBehaviour
     {
         MoveX = Input.GetAxis("Horizontal");
         MoveY = Input.GetAxis("Vertical");
+
+        //Animate the direction player is moving or idleing.
+        if (MoveX > 0) //right
+        {
+            isWalking = true;
+            p_dir = Direction.RIGHT;
+            anim.SetBool("IsWalking", isWalking);
+            anim.SetInteger("Direction", (int)p_dir);
+        }
+        else if (MoveX < 0) //left
+        {
+            isWalking = true;
+            p_dir = Direction.LEFT;
+            anim.SetBool("IsWalking", isWalking);
+            anim.SetInteger("Direction", (int)p_dir);
+        }
+        else if (MoveY > 0) //Up
+        {
+            isWalking = true;
+            p_dir = Direction.BACKWARD;
+            anim.SetBool("IsWalking", isWalking);
+            anim.SetInteger("Direction", (int)p_dir);
+        }
+        else if (MoveY < 0) //Down
+        {
+            isWalking = true;
+            p_dir = Direction.FORWARD;
+            anim.SetBool("IsWalking", isWalking);
+            anim.SetInteger("Direction", (int)p_dir);
+        }
+        else //Idle
+        {
+            isWalking = false;
+            anim.SetBool("IsWalking", isWalking);
+            anim.SetInteger("Direction", (int)p_dir);
+        }
 
         Vector3 Movement = new Vector3(MoveX * speed * Time.deltaTime, MoveY * speed * Time.deltaTime, 0);
         transform.Translate(Movement);

@@ -14,6 +14,7 @@ public class UIButtonScript : MonoBehaviour
         Application.Quit();
         Debug.Log("Game Quit!");
     }
+
     public void OnMenuButtonPressed()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
