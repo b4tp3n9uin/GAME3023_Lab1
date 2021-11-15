@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 public class Abilities : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI BattleText;
-    public GameObject AbilityPannel;
+
+    private BattleScript battle;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        battle = FindObjectOfType<BattleScript>();
     }
 
     // Update is called once per frame
@@ -24,18 +25,21 @@ public class Abilities : MonoBehaviour
     public void OnAttack1Pressed()
     {
         BattleText.text = "You Punched the Enemy.";
+        battle.ChangeTurns();
     }
 
     //Major Attack
     public void OnAttack2Pressed()
     {
         BattleText.text = "You fire Lazers.";
+        battle.ChangeTurns();
     }
 
     // Heal Yourself
     public void OnHealPressed()
     {
         BattleText.text = "You have gave yourself health.";
+        battle.ChangeTurns();
     }
 
     // Flee back to the level Map.
@@ -43,5 +47,4 @@ public class Abilities : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
-
 }

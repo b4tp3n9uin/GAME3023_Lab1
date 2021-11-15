@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum Direction
 {
@@ -83,10 +84,10 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Debug.Log("HIT Obstacle!");
         }
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy")) // Collide with Enemy, Go to Battle Scene.
         {
             Debug.Log("HIT Enemy, Ouch!");
-            transform.position = new Vector3(0, 0, 0);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 

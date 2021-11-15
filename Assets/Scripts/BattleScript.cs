@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleScript : MonoBehaviour
+public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connects to the game controller.
 {
     public TMPro.TextMeshProUGUI InBattleText;
     public GameObject AbilityPannel;
 
-
+    // Two float values for times to display texts.
     float TimeBetweenChars = 0.1f;
-    
+    float TimeBetweenTurns = 2.0f;
+    bool PlayerTurn = false; // Bool value to determine turns.
 
     private IEnumerator animateTextCoroutine;
 
@@ -17,7 +18,7 @@ public class BattleScript : MonoBehaviour
     void Start()
     {
         // Animate Text for Encounter
-        animateTextCoroutine = AnimateTextCoroutine("You have Encountered an Enemy!");
+        animateTextCoroutine = AnimateTextCoroutine("You have Encountered an Enemy!     ");
         StartCoroutine((animateTextCoroutine));
     }
 
@@ -27,7 +28,25 @@ public class BattleScript : MonoBehaviour
 
     }
 
-    IEnumerator AnimateTextCoroutine(string message)
+    // Determines whether it is your turn or the enemy's
+    public void ChangeTurns()
+    {
+        animateTextCoroutine = EnemyTurnCoroutine();
+        PlayerTurn = !PlayerTurn;
+
+        if (PlayerTurn) // When it is your turn, the ability pannel is activated.
+        {
+            AbilityPannel.SetActive(true);
+            InBattleText.text = "Your Turn:";
+        }
+        else
+        {
+            AbilityPannel.SetActive(false);
+            StartCoroutine(animateTextCoroutine); // Call the Enemy Turn Coroutine to play for the enemy.
+        }
+    }
+
+    IEnumerator AnimateTextCoroutine(string message) // The text animates in the Start of the Battle Scene
     {
         AbilityPannel.SetActive(false);
         InBattleText.text = "";
@@ -37,8 +56,17 @@ public class BattleScript : MonoBehaviour
             InBattleText.text += message[currentChar];
             yield return new WaitForSeconds(TimeBetweenChars);
         }
-        AbilityPannel.SetActive(true);
+        ChangeTurns();
         animateTextCoroutine = null;
     }
-    
+
+    IEnumerator EnemyTurnCoroutine() // Function to determine the Enemy AI's moves.
+    {
+        yield return new WaitForSeconds(TimeBetweenTurns);
+        InBattleText.text = "Enemy's Turn: ";
+        yield return new WaitForSeconds(3.0f);
+        InBattleText.text = "Enemy Skiups her Turn.";
+        yield return new WaitForSeconds(TimeBetweenTurns);
+        ChangeTurns();
+    }
 }
