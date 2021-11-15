@@ -14,6 +14,7 @@ public class GameSaver : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<PlayerBehaviour>();
+        player.transform.position = playerData.PlayerPosition;
     }
 
     //Saves player position
