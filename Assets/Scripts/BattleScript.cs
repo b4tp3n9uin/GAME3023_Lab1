@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connects to the game controller.
 {
     public TMPro.TextMeshProUGUI InBattleText;
+    public TMPro.TextMeshProUGUI PlayerHP_txt;
+    public TMPro.TextMeshProUGUI EnemyHP_txt;
     public GameObject AbilityPannel;
 
     // Two float values for times to display texts.
@@ -13,19 +16,22 @@ public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connect
     bool PlayerTurn = false; // Bool value to determine turns.
 
     private IEnumerator animateTextCoroutine;
+    private EnemyBattle enemy;
 
     // Start is called before the first frame update
     void Start()
     {
+        enemy = FindObjectOfType<EnemyBattle>();
+
         // Animate Text for Encounter
-        animateTextCoroutine = AnimateTextCoroutine("You have Encountered an Enemy!     ");
+        animateTextCoroutine = AnimateTextCoroutine("Kai has encountered Amy the Witch!     ");
         StartCoroutine((animateTextCoroutine));
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        AttackEffect();
     }
 
     // Determines whether it is your turn or the enemy's
@@ -33,11 +39,29 @@ public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connect
     {
         animateTextCoroutine = EnemyTurnCoroutine();
         PlayerTurn = !PlayerTurn;
+        string nextScene;
+
+        if (Abilities.Kai_hp == 0)
+        {
+            InBattleText.color = Color.red;
+            InBattleText.text = "Amy has Defeated Kai! Amy WINS!     ";
+            nextScene = "StartingScene";
+            SceneManager.LoadScene(nextScene);
+        }
+
+        if (EnemyBattle.Amy_hp == 0)
+        {
+            InBattleText.color = Color.yellow;
+            InBattleText.text = "Amy has Defeated Kai! Amy WINS!     ";
+            nextScene = "SampleScene";
+            SceneManager.LoadScene(nextScene);
+        }
 
         if (PlayerTurn) // When it is your turn, the ability pannel is activated.
         {
+            InBattleText.color = Color.green;
             AbilityPannel.SetActive(true);
-            InBattleText.text = "Your Turn:";
+            InBattleText.text = "Kai's Turn:";
         }
         else
         {
@@ -63,10 +87,19 @@ public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connect
     IEnumerator EnemyTurnCoroutine() // Function to determine the Enemy AI's moves.
     {
         yield return new WaitForSeconds(TimeBetweenTurns);
-        InBattleText.text = "Enemy's Turn: ";
+        InBattleText.color = Color.red;
+        InBattleText.text = "Amy's Turn: ";
         yield return new WaitForSeconds(3.0f);
-        InBattleText.text = "Enemy Skiups her Turn.";
+        enemy.EnemyActionTurn();
+        InBattleText.text = enemy.actionMessage(InBattleText.text);
         yield return new WaitForSeconds(TimeBetweenTurns);
         ChangeTurns();
     }
+
+    public void AttackEffect()
+    {
+        PlayerHP_txt.text = "HP: " + Abilities.Kai_hp + "/100";
+        EnemyHP_txt.text = "HP: " + EnemyBattle.Amy_hp + "/100";
+    }
+
 }

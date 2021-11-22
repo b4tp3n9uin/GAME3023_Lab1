@@ -9,6 +9,8 @@ public class Abilities : MonoBehaviour
 
     private BattleScript battle;
 
+    public static int Kai_hp = 100;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,21 +26,36 @@ public class Abilities : MonoBehaviour
     //Minor Attack
     public void OnAttack1Pressed()
     {
-        BattleText.text = "You Punched the Enemy.";
+        BattleText.text = "Kai Punches Amy.";
+        EnemyBattle.Amy_hp -= 10;
+
+        if (EnemyBattle.Amy_hp < 0)
+            EnemyBattle.Amy_hp = 0;
+
         battle.ChangeTurns();
     }
 
     //Major Attack
     public void OnAttack2Pressed()
     {
-        BattleText.text = "You fire Lazers.";
+        BattleText.text = "Kai fire Lazers.";
+        EnemyBattle.Amy_hp -= 25;
+
+        if (EnemyBattle.Amy_hp < 0)
+            EnemyBattle.Amy_hp = 0;
+
         battle.ChangeTurns();
     }
 
     // Heal Yourself
     public void OnHealPressed()
     {
-        BattleText.text = "You have gave yourself health.";
+        BattleText.text = "Kai eats an Apple to heal himself.";
+        Kai_hp += 15;
+
+        if (Kai_hp > 100)
+            Kai_hp = 100;
+        
         battle.ChangeTurns();
     }
 
