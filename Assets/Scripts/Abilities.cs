@@ -14,6 +14,8 @@ public class Abilities : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (Kai_hp == 0)
+            Kai_hp = 100;
         battle = FindObjectOfType<BattleScript>();
     }
 
@@ -38,7 +40,7 @@ public class Abilities : MonoBehaviour
     //Major Attack
     public void OnAttack2Pressed()
     {
-        BattleText.text = "Kai fire Lazers.";
+        BattleText.text = "Kai fires Lazers.";
         EnemyBattle.Amy_hp -= 25;
 
         if (EnemyBattle.Amy_hp < 0)

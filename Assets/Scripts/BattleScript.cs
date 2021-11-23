@@ -43,31 +43,37 @@ public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connect
 
         if (Abilities.Kai_hp == 0)
         {
+            //Amy defeats Kai
             InBattleText.color = Color.red;
             InBattleText.text = "Amy has Defeated Kai! Amy WINS!     ";
             nextScene = "StartingScene";
-            SceneManager.LoadScene(nextScene);
+            StartCoroutine(GameOverDelay(nextScene));
         }
-
-        if (EnemyBattle.Amy_hp == 0)
+        else if (EnemyBattle.Amy_hp == 0)
         {
+            //Kai defeats Amy
             InBattleText.color = Color.yellow;
-            InBattleText.text = "Amy has Defeated Kai! Amy WINS!     ";
+            InBattleText.text = "Kai has Defeated Amy! Kai WINS!     ";
             nextScene = "SampleScene";
-            SceneManager.LoadScene(nextScene);
-        }
-
-        if (PlayerTurn) // When it is your turn, the ability pannel is activated.
-        {
-            InBattleText.color = Color.green;
-            AbilityPannel.SetActive(true);
-            InBattleText.text = "Kai's Turn:";
+            StartCoroutine(GameOverDelay(nextScene));
         }
         else
         {
-            AbilityPannel.SetActive(false);
-            StartCoroutine(animateTextCoroutine); // Call the Enemy Turn Coroutine to play for the enemy.
+            //Continue Battle
+            if (PlayerTurn) // When it is your turn, the ability pannel is activated.
+            {
+                InBattleText.color = Color.green;
+                AbilityPannel.SetActive(true);
+                InBattleText.text = "Kai's Turn:";
+            }
+            else
+            {
+                AbilityPannel.SetActive(false);
+                StartCoroutine(animateTextCoroutine); // Call the Enemy Turn Coroutine to play for the enemy.
+            }
         }
+
+        
     }
 
     IEnumerator AnimateTextCoroutine(string message) // The text animates in the Start of the Battle Scene
@@ -96,7 +102,13 @@ public class BattleScript : MonoBehaviour // Scipt for the Battle Scene, connect
         ChangeTurns();
     }
 
-    public void AttackEffect()
+    IEnumerator GameOverDelay(string scene) // Delay the Battle for a few seconds to display who won.
+    {
+        yield return new WaitForSeconds(4.5f);
+        SceneManager.LoadScene(scene);
+    }
+
+    public void AttackEffect() // Text lable to show how much HP Player and Enemy has.
     {
         PlayerHP_txt.text = "HP: " + Abilities.Kai_hp + "/100";
         EnemyHP_txt.text = "HP: " + EnemyBattle.Amy_hp + "/100";
