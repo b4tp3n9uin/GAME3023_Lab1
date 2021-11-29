@@ -20,10 +20,14 @@ public class PlayerBehaviour : MonoBehaviour
     public Animator anim;
     public bool isWalking = false;
 
+    private bool isOnGrass = false;
+
     void Start()
     {
         GameSaver.OnSaveEvent.AddListener(SavePosition);
         GameSaver.OnLoadEvent.AddListener(LoadPosition);
+
+        playWalkSound();
     }
 
     // Update is called once per frame
@@ -74,6 +78,9 @@ public class PlayerBehaviour : MonoBehaviour
             anim.SetInteger("Direction", (int)p_dir);
         }
 
+        // Play Walking audio when player is walking.
+        playWalkSound();
+
         Vector3 Movement = new Vector3(MoveX * speed * Time.deltaTime, MoveY * speed * Time.deltaTime, 0);
         transform.Translate(Movement);
     }
@@ -83,6 +90,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("HIT Obstacle!");
+            FindObjectOfType<AudioManager>().Play("Hit");
         }
         if (other.gameObject.CompareTag("Enemy")) // Collide with Enemy, Go to Battle Scene.
         {
@@ -91,25 +99,59 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    void CheckCollision() // This was for lab 1. But I made the Map Bigger for Lab 2.
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (transform.position.x > 10.8)
-            transform.position = new Vector3(10.6f, transform.position.y, 0);
-        if (transform.position.x < -10.8)
-            transform.position = new Vector3(-10.6f, transform.position.y, 0);
-        if (transform.position.y > 4.3)
-            transform.position = new Vector3(transform.position.x, 4.1f, 0);
-        if (transform.position.y < -4.1)
-            transform.position = new Vector3(transform.position.x, -3.9f, 0);
+        if (other.gameObject.CompareTag("Grass"))
+        {
+            Debug.Log("Grass Enter");
+            isOnGrass = true;
+        }
+
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Grass"))
+        {
+            Debug.Log("Grass Exit");
+            isOnGrass = false;
+        }
+    }
+
+    // Function that will turn on and off the audio clips for walking
+    void playWalkSound()
+    {
+        if (isWalking)
+        {
+            if (isOnGrass) // Sound will change when you walk on Grass.
+            {
+                FindObjectOfType<AudioManager>().LoopSound("WalkGrass");
+            }
+            else
+            {
+                FindObjectOfType<AudioManager>().LoopSound("WalkNormal");
+            }
+                
+        }
+        else // Stop the walking sound from looping.
+        { 
+            if (isOnGrass)
+                FindObjectOfType<AudioManager>().Stop("WalkGrass");
+            else
+                FindObjectOfType<AudioManager>().Stop("WalkNormal");
+        }
+
     }
     
 
+    // Save Position
     void SavePosition()
     {
         PlayerPrefs.SetString("Position", "Hello!");
         Debug.Log("Position Saved");
     }
     
+    // Load Position
     void LoadPosition()
     {
         PlayerPrefs.GetString("Position", "");
