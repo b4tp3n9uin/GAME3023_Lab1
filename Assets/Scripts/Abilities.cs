@@ -11,12 +11,22 @@ public class Abilities : MonoBehaviour
 
     public static int Kai_hp = 100;
 
+    [Header("Entity's")]
+    public EnemyBattle enemy;
+
+    [Header("Particle System")]
+    public ParticleSystem P_particle;
+
     // Start is called before the first frame update
     void Start()
     {
         if (Kai_hp == 0)
             Kai_hp = 100;
         battle = FindObjectOfType<BattleScript>();
+
+        P_particle.Stop();
+        
+        enemy = FindObjectOfType<EnemyBattle>();
     }
 
     // Update is called once per frame
@@ -34,6 +44,7 @@ public class Abilities : MonoBehaviour
         if (EnemyBattle.Amy_hp < 0)
             EnemyBattle.Amy_hp = 0;
 
+        StartCoroutine(enemy.E_ParticleEff(Color.yellow));
         battle.ChangeTurns();
     }
 
@@ -46,6 +57,7 @@ public class Abilities : MonoBehaviour
         if (EnemyBattle.Amy_hp < 0)
             EnemyBattle.Amy_hp = 0;
 
+        StartCoroutine(enemy.E_ParticleEff(Color.red));
         battle.ChangeTurns();
     }
 
@@ -57,7 +69,8 @@ public class Abilities : MonoBehaviour
 
         if (Kai_hp > 100)
             Kai_hp = 100;
-        
+
+        StartCoroutine(P_ParticleEff(Color.green));
         battle.ChangeTurns();
     }
 
@@ -65,5 +78,13 @@ public class Abilities : MonoBehaviour
     public void OnFleePressed()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+
+    public IEnumerator P_ParticleEff(Color clr)
+    {
+        P_particle.startColor = clr;
+        P_particle.Play();
+        yield return new WaitForSeconds(1);
+        P_particle.Stop();
     }
 }
